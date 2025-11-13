@@ -7,4 +7,8 @@ export class GetTasksUseCase {
   async execute(): Promise<Task[]> {
     return this.repo.findAll();
   }
+
+  async executePaginated(page: number, limit: number): Promise<{ data: Task[]; total: number }> {
+    return this.repo.findAllPaginated(page, limit);
+  }
 }

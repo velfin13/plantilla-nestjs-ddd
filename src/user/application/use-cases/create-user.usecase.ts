@@ -17,16 +17,17 @@ export class CreateUserUseCase {
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    const user: User = {
-      id: randomUUID(),
-      name: dto.name,
-      lastname: dto.lastname,
-      phone: dto.phone,
-      email: dto.email,
-      password: hashedPassword,
-      active: false,
-    };
+    const user = new User.Builder()
+      .setId(randomUUID())
+      .setName(dto.name)
+      .setLastname(dto.lastname)
+      .setPhone(dto.phone)
+      .setEmail(dto.email)
+      .setPassword(hashedPassword)
+      .setActive(true)
+      .build();
 
-    return this.userRepo.save(user);
+    await this.userRepo.save(user);
+    return user;
   }
 }

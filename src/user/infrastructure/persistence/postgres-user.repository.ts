@@ -28,6 +28,23 @@ export class PostgresUserRepository
     );
   }
 
+  async findAllPaginated(page: number, limit: number): Promise<{ data: User[]; total: number }> {
+    const { data, total } = await super.findAllPaginated(page, limit);
+    return {
+      data: data.map((e) =>
+        new User.Builder()
+          .setId(e.id)
+          .setName(e.name)
+          .setLastname(e.lastname)
+          .setPhone(e.phone)
+          .setEmail(e.email)
+          .setActive(e.active)
+          .build(),
+      ),
+      total,
+    };
+  }
+
   async findById(id: string): Promise<User | null> {
     const entity = await super.findById(id);
     if (!entity) return null;

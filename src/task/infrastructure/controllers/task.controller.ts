@@ -1,11 +1,13 @@
-import { Body, Controller, Get, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ToggleTaskUseCase } from 'src/task/application/use-cases/toggle-task.usecase';
 import { CreateTaskUseCase } from '../../application/use-cases/create-task.usecase';
 import { GetTasksUseCase } from '../../application/use-cases/get-tasks.usecase';
 import { Task } from '../../domain/entities/task.entity';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { ToggleTaskDto } from '../dto/toggle-task.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
 
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -32,8 +34,17 @@ export class TaskController {
 
   @Get()
   @ApiOperation({ summary: 'Obtener todas las tareas' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiResponse({ status: 200, description: 'Lista de tareas', type: [Task] })
-  async findAll() {
+  async findAll(@Query() paginationDto: PaginationDto) {
+    if (paginationDto.page && paginationDto.limit) {
+      const { data, total } = await this.getTasksUseCase.executePaginated(
+        paginationDto.page,
+        paginationDto.limit,
+      );
+      return new PaginatedResponseDto(data, total, paginationDto.page, paginationDto.limit);
+    }
     return this.getTasksUseCase.execute();
   }
 }

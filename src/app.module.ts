@@ -6,26 +6,29 @@ import { TaskEntity } from './task/infrastructure/persistence/task.entity';
 import { UserModule } from './user/infrastructure/modules/user.module';
 import { UserEntity } from './user/infrastructure/persistence/user.entity';
 import { AuthModule } from './auth/infrastructure/modules/auth.module';
+import { appConfig, databaseConfig, jwtConfig } from './config';
+import { DatabaseConfig } from './config/config.interface';
+import { LoggerModule } from './common/infrastructure/logger/logger.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [appConfig, databaseConfig, jwtConfig],
+      envFilePath: ['.env.local', '.env'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: config.get<'postgres'>('DB_TYPE', 'postgres'),
-        host: config.get<string>('DB_HOST', 'localhost'),
-        port: parseInt(config.get<string>('DB_PORT', '5432'), 10),
-        username: config.get<string>('DB_USERNAME', 'user'),
-        password: config.get<string>('DB_PASSWORD', 'password'),
-        database: config.get<string>('DB_NAME', 'db'),
-        entities: [TaskEntity, UserEntity],
-        synchronize: true,
-      }),
+      useFactory: (config: ConfigService) => {
+        const dbConfig = config.get<DatabaseConfig>('database');
+        return {
+          ...dbConfig,
+          entities: [TaskEntity, UserEntity],
+        };
+      },
     }),
+    LoggerModule,
     TaskModule,
     AuthModule,
     UserModule

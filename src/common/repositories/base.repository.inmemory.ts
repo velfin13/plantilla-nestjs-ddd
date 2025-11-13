@@ -7,6 +7,12 @@ export abstract class BaseRepositoryInMemory<T extends { id: string | number }> 
     return [...this.items];
   }
 
+  async findAllPaginated(page: number, limit: number): Promise<{ data: T[]; total: number }> {
+    const skip = (page - 1) * limit;
+    const data = this.items.slice(skip, skip + limit);
+    return { data, total: this.items.length };
+  }
+
   async findById(id: string): Promise<T | null> {
     return this.items.find(i => i.id === id) || null;
   }

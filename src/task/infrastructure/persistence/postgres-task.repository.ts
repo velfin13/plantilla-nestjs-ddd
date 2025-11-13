@@ -18,6 +18,14 @@ export class PostgresTaskRepository extends BaseRepositoryTypeORM<TaskEntity> im
     return entities.map(e => new Task(e.id, e.title, e.completed));
   }
 
+  async findAllPaginated(page: number, limit: number): Promise<{ data: Task[]; total: number }> {
+    const { data, total } = await super.findAllPaginated(page, limit);
+    return {
+      data: data.map(e => new Task(e.id, e.title, e.completed)),
+      total,
+    };
+  }
+
   async findById(id: string): Promise<Task | null> {
     const entity = await super.findById(id);
     if (!entity) return null;

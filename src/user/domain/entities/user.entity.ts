@@ -1,3 +1,7 @@
+import { Email } from '../value-objects/email.vo';
+import { Phone } from '../value-objects/phone.vo';
+import { ValidationException } from '../../../common/domain/exceptions';
+
 export class User {
   readonly id: string;
   name: string;
@@ -8,6 +12,7 @@ export class User {
   active: boolean;
 
   private constructor(builder: any) {
+    this.validateBusinessRules(builder);
     this.id = builder.id;
     this.name = builder.name;
     this.lastname = builder.lastname;
@@ -15,6 +20,31 @@ export class User {
     this.email = builder.email;
     this.password = builder.password;
     this.active = builder.active ?? true;
+  }
+
+  private validateBusinessRules(builder: any): void {
+    // Validar email usando Value Object
+    try {
+      new Email(builder.email);
+    } catch (error) {
+      throw error;
+    }
+
+    // Validar phone usando Value Object
+    try {
+      new Phone(builder.phone);
+    } catch (error) {
+      throw error;
+    }
+
+    // Validaciones adicionales de negocio
+    if (!builder.name || builder.name.trim().length < 2) {
+      throw new ValidationException('Name must be at least 2 characters long');
+    }
+
+    if (!builder.lastname || builder.lastname.trim().length < 2) {
+      throw new ValidationException('Lastname must be at least 2 characters long');
+    }
   }
 
   static Builder = class {

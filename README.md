@@ -1,98 +1,247 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Plantilla NestJS con DDD (Domain-Driven Design)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Plantilla de proyecto NestJS estructurada siguiendo principios de **Domain-Driven Design (DDD)** con autenticación JWT, TypeORM, PostgreSQL y mejores prácticas.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🏗️ Arquitectura
 
-## Description
+El proyecto está organizado en capas siguiendo DDD:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+```
+src/
+├── common/                    # Código compartido
+│   ├── domain/
+│   │   └── exceptions/       # Excepciones de dominio
+│   ├── dto/                  # DTOs compartidos (paginación)
+│   ├── infrastructure/
+│   │   ├── interceptors/     # Interceptores globales
+│   │   └── logger/           # Sistema de logging
+│   └── repositories/         # Repositorios base abstractos
+│
+├── config/                    # Configuración tipada
+│   ├── app.config.ts
+│   ├── database.config.ts
+│   └── jwt.config.ts
+│
+├── [modulo]/                 # Cada módulo sigue esta estructura:
+│   ├── application/
+│   │   ├── mappers/          # Mappers Domain ↔ Infrastructure
+│   │   └── use-cases/        # Casos de uso (lógica de aplicación)
+│   ├── domain/
+│   │   ├── entities/         # Entidades de dominio (lógica de negocio)
+│   │   ├── repositories/     # Interfaces de repositorios
+│   │   └── value-objects/    # Value Objects
+│   └── infrastructure/
+│       ├── controllers/      # Controladores HTTP
+│       ├── dto/              # DTOs de entrada/salida
+│       ├── modules/          # Módulos de NestJS
+│       └── persistence/      # Implementaciones de repositorios
 ```
 
-## Compile and run the project
+## ✨ Características
+
+### Implementadas
+
+- ✅ **Arquitectura DDD** con separación clara de capas
+- ✅ **Excepciones de Dominio** personalizadas
+- ✅ **Value Objects** para validaciones (Email, Phone, Password)
+- ✅ **Mappers** entre capas (Domain ↔ Infrastructure)
+- ✅ **Serialización** automática (excluye passwords de respuestas)
+- ✅ **Validación** en entidades de dominio
+- ✅ **Paginación** en endpoints GET
+- ✅ **Configuración tipada** por ambiente
+- ✅ **Logger Service** personalizado
+- ✅ **Docker & Docker Compose** para desarrollo
+- ✅ **Autenticación JWT** con Passport
+- ✅ **TypeORM** con PostgreSQL
+- ✅ **Swagger/OpenAPI** documentado
+
+## 🚀 Inicio Rápido
+
+### Prerrequisitos
+
+- Node.js 20+
+- Docker y Docker Compose (opcional)
+- PostgreSQL (si no usas Docker)
+
+### Instalación
+
+1. **Clonar y configurar:**
 
 ```bash
-# development
-$ npm run start
+# Copiar variables de entorno
+cp .env.example .env
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Editar .env con tus valores
 ```
 
-## Run tests
+2. **Con Docker (Recomendado):**
 
 ```bash
-# unit tests
-$ npm run test
+# Levantar servicios
+docker-compose up -d
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Ver logs
+docker-compose logs -f app
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+3. **Sin Docker:**
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Instalar dependencias
+npm install
+
+# Asegúrate de tener PostgreSQL corriendo y configurado en .env
+
+# Modo desarrollo
+npm run start:dev
+
+# Modo producción
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 📚 API Endpoints
 
-## Resources
+### Autenticación
 
-Check out a few resources that may come in handy when working with NestJS:
+- `POST /api/auth/register` - Registrar usuario
+- `POST /api/auth/login` - Iniciar sesión (retorna JWT)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Usuarios
 
-## Support
+- `GET /api/users?page=1&limit=10` - Listar usuarios (con paginación opcional)
+- `POST /api/users` - Crear usuario
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Tareas
 
-## Stay in touch
+- `GET /api/tasks?page=1&limit=10` - Listar tareas (con paginación opcional)
+- `POST /api/tasks` - Crear tarea
+- `PATCH /api/tasks/toggle` - Alternar estado de tarea
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Swagger
 
-## License
+Documentación interactiva disponible en: `http://localhost:3000/api`
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 🔐 Seguridad
+
+- Passwords hasheados con bcrypt
+- JWT para autenticación
+- Validación de DTOs con class-validator
+- Value Objects para validación de dominio
+- Serialización automática (passwords excluidos)
+- Variables de entorno para secretos
+
+## 📝 Mejores Prácticas Implementadas
+
+### Domain-Driven Design
+
+1. **Entidades de Dominio**: Contienen lógica de negocio y validaciones
+2. **Value Objects**: Encapsulan validaciones complejas (Email, Phone, Password)
+3. **Repositorios**: Interfaces en dominio, implementaciones en infraestructura
+4. **Use Cases**: Orquestan la lógica de aplicación
+5. **Mappers**: Convierten entre capas sin acoplarlas
+
+### Clean Code
+
+- Separación de responsabilidades
+- Inyección de dependencias
+- Configuración tipada
+- Manejo de errores consistente
+- Logging estructurado
+
+## 🧪 Testing
+
+```bash
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
+```
+
+## 📦 Scripts Disponibles
+
+```bash
+npm run start          # Iniciar en modo normal
+npm run start:dev      # Iniciar en modo desarrollo (watch)
+npm run start:debug    # Iniciar con debugger
+npm run start:prod     # Iniciar en modo producción
+
+npm run build          # Compilar proyecto
+npm run lint           # Ejecutar linter
+npm run format         # Formatear código con Prettier
+```
+
+## 🐳 Docker
+
+### Desarrollo
+
+```bash
+docker-compose up -d
+```
+
+### Producción
+
+```bash
+docker build --target production -t nestjs-ddd:prod .
+docker run -p 3000:3000 --env-file .env nestjs-ddd:prod
+```
+
+## 🔧 Configuración
+
+### Variables de Entorno
+
+Ver `.env.example` para todas las variables disponibles:
+
+- `NODE_ENV`: Ambiente (development/production)
+- `PORT`: Puerto de la aplicación
+- `DB_*`: Configuración de base de datos
+- `JWT_SECRET`: Secreto para JWT
+- `JWT_EXPIRES_IN`: Tiempo de expiración del token
+
+### TypeORM
+
+La sincronización automática está habilitada en desarrollo. En producción, usa migraciones:
+
+```bash
+npm run migration:generate -- -n MigrationName
+npm run migration:run
+```
+
+## 📖 Próximas Mejoras Sugeridas
+
+- [ ] Implementar CQRS con `@nestjs/cqrs`
+- [ ] Agregar Redis para caché
+- [ ] Implementar Rate Limiting
+- [ ] Domain Events con Event Bus
+- [ ] Agregar tests unitarios y e2e
+- [ ] CI/CD pipeline
+- [ ] Health checks y métricas
+- [ ] Soft deletes en entidades
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Por favor:
+
+1. Fork el proyecto
+2. Crea una rama (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto es de código abierto y está disponible bajo la licencia MIT.
+
+## 👤 Autor
+
+- GitHub: [@velfin13](https://github.com/velfin13)
+
+## 🙏 Agradecimientos
+
+- [NestJS](https://nestjs.com/)
+- [TypeORM](https://typeorm.io/)
+- Comunidad DDD

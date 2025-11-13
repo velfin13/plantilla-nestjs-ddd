@@ -8,4 +8,8 @@ export class GetUsersUseCase {
   async execute(): Promise<User[]> {
     return this.repo.findAll();
   }
+
+  async executePaginated(page: number, limit: number): Promise<{ data: User[]; total: number }> {
+    return this.repo.findAllPaginated(page, limit);
+  }
 }
