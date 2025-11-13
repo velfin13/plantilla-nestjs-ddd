@@ -4,8 +4,8 @@ export class Email {
   private readonly value: string;
 
   constructor(email: string) {
-    this.validate(email);
     this.value = email.toLowerCase().trim();
+    this.validate(this.value);
   }
 
   private validate(email: string): void {

@@ -151,16 +151,41 @@ Documentación interactiva disponible en: `http://localhost:3000/api`
 
 ## 🧪 Testing
 
+El proyecto incluye una suite completa de tests:
+
+### Tests Unitarios
+
 ```bash
-# Unit tests
-npm run test
+# Ejecutar todos los tests unitarios
+npm test
 
-# E2E tests
-npm run test:e2e
+# Tests en modo watch
+npm run test:watch
 
-# Test coverage
+# Cobertura de código
 npm run test:cov
 ```
+
+**Cobertura actual:**
+- ✅ Value Objects (Email, Phone, Password) - 100%
+- ✅ Entidades de dominio (User, Task) - 100%
+- ✅ Use Cases críticos (CreateUser, Login, CreateTask) - 100%
+- **83 tests unitarios** pasando
+
+### Tests E2E
+
+```bash
+# Ejecutar tests end-to-end
+npm run test:e2e
+```
+
+**Tests E2E disponibles:**
+- Health checks (liveness, readiness)
+- Autenticación (register, login)
+- CRUD de usuarios
+- CRUD de tareas
+
+⚠️ **Nota**: Los tests E2E requieren una base de datos PostgreSQL activa. Configura las variables de entorno correctamente antes de ejecutarlos.
 
 ## 📦 Scripts Disponibles
 

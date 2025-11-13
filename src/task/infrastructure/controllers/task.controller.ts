@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ToggleTaskUseCase } from 'src/task/application/use-cases/toggle-task.usecase';
 import { CreateTaskUseCase } from '../../application/use-cases/create-task.usecase';
@@ -13,10 +13,12 @@ import { GetTaskByIdUseCase } from 'src/task/application/use-cases/get-task-by-i
 import { UpdateTaskUseCase } from 'src/task/application/use-cases/update-task.usecase';
 import { DeleteTaskUseCase } from 'src/task/application/use-cases/delete-task.usecase';
 import { UpdateTaskDto } from '../dto/update-task.dto';
+import { TransformInterceptor } from 'src/common/infrastructure/interceptors/transform.interceptor';
 
 @ApiTags('Tasks')
 @ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(TransformInterceptor)
 @Controller('tasks')
 export class TaskController {
   constructor(
@@ -37,9 +39,13 @@ export class TaskController {
     return this.createTaskUseCase.execute(createTaskDto);
   }
 
-  @Patch('toggle')
-  async toggle(@Body() dto: ToggleTaskDto) {
-    return this.toggleTaskUseCase.execute(dto.taskId);
+  @Patch(':id/toggle')
+  @ApiOperation({ summary: 'Alternar estado de completado de una tarea' })
+  @ApiParam({ name: 'id', description: 'ID de la tarea', example: 'uuid-here' })
+  @ApiResponse({ status: 200, description: 'Tarea actualizada correctamente', type: Task })
+  @ApiResponse({ status: 404, description: 'Tarea no encontrada' })
+  async toggle(@Param('id') id: string) {
+    return this.toggleTaskUseCase.execute(id);
   }
 
   @Get()

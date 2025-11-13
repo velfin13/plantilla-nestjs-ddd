@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Post, UseInterceptors, HttpCode } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { CreateUserUseCase } from 'src/user/application/use-cases/create-user.usecase';
@@ -31,6 +31,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @HttpCode(200)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Authenticate user and return JWT token' })
   @ApiBody({ type: LoginDto })
