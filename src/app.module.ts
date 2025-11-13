@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TaskModule } from './task/infrastructure/modules/task.module';
 import { TaskEntity } from './task/infrastructure/persistence/task.entity';
 import { UserModule } from './user/infrastructure/modules/user.module';
@@ -12,6 +12,7 @@ import { appConfig, databaseConfig, jwtConfig, throttlerConfig } from './config'
 import { DatabaseConfig } from './config/config.interface';
 import { LoggerModule } from './common/infrastructure/logger/logger.module';
 import { HealthModule } from './common/infrastructure/modules/health.module';
+import { LoggingInterceptor } from './common/infrastructure/interceptors/logging.interceptor';
 
 @Module({
   imports: [
@@ -51,6 +52,10 @@ import { HealthModule } from './common/infrastructure/modules/health.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
     },
   ],
 })

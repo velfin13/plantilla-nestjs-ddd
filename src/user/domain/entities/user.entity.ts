@@ -27,21 +27,18 @@ export class User {
   }
 
   private validateBusinessRules(builder: any): void {
-    // Validar email usando Value Object
     try {
       new Email(builder.email);
     } catch (error) {
       throw error;
     }
 
-    // Validar phone usando Value Object
     try {
       new Phone(builder.phone);
     } catch (error) {
       throw error;
     }
 
-    // Validaciones adicionales de negocio
     if (!builder.name || builder.name.trim().length < 2) {
       throw new ValidationException('Name must be at least 2 characters long');
     }
@@ -76,9 +73,8 @@ export class User {
       if (!this.id || !this.name || !this.lastname || !this.phone || !this.email) {
         throw new Error('Faltan campos obligatorios');
       }
-      // Password puede ser undefined cuando se carga desde BD sin incluirlo por seguridad
       if (!this.password) {
-        this.password = ''; // Valor por defecto para casos donde no se necesita
+        this.password = '';
       }
       return new User(this);
     }

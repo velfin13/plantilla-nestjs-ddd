@@ -4,7 +4,7 @@ import { HealthCheck, HealthCheckService, TypeOrmHealthIndicator, MemoryHealthIn
 import { SkipThrottle } from '@nestjs/throttler';
 
 @ApiTags('Health')
-@SkipThrottle() // Excluir health checks del rate limiting
+@SkipThrottle()
 @Controller('health')
 export class HealthController {
   constructor(
@@ -52,16 +52,9 @@ export class HealthController {
   })
   check() {
     return this.health.check([
-      // Verifica conexión a la base de datos
       () => this.db.pingCheck('database'),
-      
-      // Verifica uso de memoria heap (máximo 150MB)
       () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
-      
-      // Verifica uso de memoria RSS (máximo 300MB)
       () => this.memory.checkRSS('memory_rss', 300 * 1024 * 1024),
-      
-      // Verifica espacio en disco (mínimo 50% libre)
       () => this.disk.checkStorage('storage', { 
         path: '/', 
         thresholdPercent: 0.5 

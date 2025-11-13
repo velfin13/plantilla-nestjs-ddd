@@ -20,7 +20,6 @@ export class UpdateUserUseCase {
       throw new NotFoundException('User', id);
     }
 
-    // Actualizar solo los campos proporcionados
     if (dto.name !== undefined) user.name = dto.name;
     if (dto.lastname !== undefined) user.lastname = dto.lastname;
     if (dto.phone !== undefined) user.phone = dto.phone;

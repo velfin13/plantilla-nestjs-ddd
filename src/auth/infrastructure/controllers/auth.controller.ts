@@ -19,7 +19,7 @@ export class AuthController {
   ) { }
 
   @Post('register')
-  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 intentos por minuto
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @ApiOperation({ summary: 'Register a new user' })
   @ApiBody({ type: RegisterDto })
   @ApiResponse({ status: 201, description: 'User successfully registered', type: UserResponse })
@@ -31,7 +31,7 @@ export class AuthController {
   }
 
   @Post('login')
-  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 intentos por minuto
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Authenticate user and return JWT token' })
   @ApiBody({ type: LoginDto })
   @ApiResponse({ status: 200, description: 'User authenticated successfully' })

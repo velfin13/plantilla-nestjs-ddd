@@ -6,6 +6,7 @@ import { JwtStrategy } from '../jwt.strategy';
 import { LoginUseCase } from '../../application/use-cases/login.usecase';
 import { UserModule } from 'src/user/infrastructure/modules/user.module';
 import { CreateUserUseCase } from 'src/user/application/use-cases/create-user.usecase';
+import { LoggerModule } from 'src/common/infrastructure/logger/logger.module';
 
 @Module({
     imports: [
@@ -15,18 +16,19 @@ import { CreateUserUseCase } from 'src/user/application/use-cases/create-user.us
             signOptions: { expiresIn: '1h' },
         }),
         UserModule,
+        LoggerModule,
     ],
     controllers: [AuthController],
     providers: [
         {
             provide: CreateUserUseCase,
-            useFactory: (userRepo) => new CreateUserUseCase(userRepo),
-            inject: ['UserRepository'],
+            useFactory: (userRepo, logger) => new CreateUserUseCase(userRepo, logger),
+            inject: ['UserRepository', 'LoggerService'],
         },
         {
             provide: LoginUseCase,
-            useFactory: (userRepo, jwtService) => new LoginUseCase(userRepo, jwtService),
-            inject: ['UserRepository', JwtService],
+            useFactory: (userRepo, jwtService, logger) => new LoginUseCase(userRepo, jwtService, logger),
+            inject: ['UserRepository', JwtService, 'LoggerService'],
         },
         JwtStrategy,
     ],

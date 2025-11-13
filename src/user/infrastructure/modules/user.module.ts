@@ -8,9 +8,10 @@ import { DeleteUserUseCase } from 'src/user/application/use-cases/delete-user.us
 import { UserController } from '../controllers/user.controller';
 import { PostgresUserRepository } from '../persistence/postgres-user.repository';
 import { UserEntity } from '../persistence/user.entity';
+import { LoggerModule } from 'src/common/infrastructure/logger/logger.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [TypeOrmModule.forFeature([UserEntity]), LoggerModule],
   controllers: [UserController],
   providers: [
     {
@@ -19,8 +20,8 @@ import { UserEntity } from '../persistence/user.entity';
     },
     {
       provide: CreateUserUseCase,
-      useFactory: (repo: PostgresUserRepository) => new CreateUserUseCase(repo),
-      inject: ['UserRepository'],
+      useFactory: (repo: PostgresUserRepository, logger) => new CreateUserUseCase(repo, logger),
+      inject: ['UserRepository', 'LoggerService'],
     },
     {
       provide: GetUsersUseCase,
@@ -39,8 +40,8 @@ import { UserEntity } from '../persistence/user.entity';
     },
     {
       provide: DeleteUserUseCase,
-      useFactory: (repo: PostgresUserRepository) => new DeleteUserUseCase(repo),
-      inject: ['UserRepository'],
+      useFactory: (repo: PostgresUserRepository, logger) => new DeleteUserUseCase(repo, logger),
+      inject: ['UserRepository', 'LoggerService'],
     },
   ],
   exports: ['UserRepository', CreateUserUseCase],
