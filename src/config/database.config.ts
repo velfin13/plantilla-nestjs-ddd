@@ -8,5 +8,5 @@ export default registerAs('database', (): DatabaseConfig => ({
   username: process.env.DB_USERNAME || 'user',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_NAME || 'db',
-  synchronize: process.env.NODE_ENV !== 'production',
+  synchronize: false,
 }));

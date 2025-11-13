@@ -175,6 +175,50 @@ npm run lint           # Ejecutar linter
 npm run format         # Formatear código con Prettier
 ```
 
+## 🗃️ Migraciones de Base de Datos
+
+Este proyecto usa TypeORM migrations para gestionar el schema de la base de datos.
+
+### Configuración
+
+1. Asegúrate de tener las variables de entorno correctas en `.env`
+2. `synchronize` está deshabilitado - usa siempre migrations
+
+### Comandos
+
+```bash
+# Generar migración automática (detecta cambios en entidades)
+npm run migration:generate -- src/migrations/MigrationName
+
+# Crear migración vacía (para cambios manuales)
+npm run migration:create -- src/migrations/MigrationName
+
+# Ejecutar migraciones pendientes
+npm run migration:run
+
+# Revertir última migración
+npm run migration:revert
+
+# Ver estado de migraciones
+npm run migration:show
+```
+
+### Flujo de Trabajo
+
+1. **Modificas una entidad** (ej: agregas un campo)
+2. **Generas la migración**: `npm run migration:generate -- src/migrations/AddFieldToUser`
+3. **Revisas el archivo** generado en `src/migrations/`
+4. **Ejecutas la migración**: `npm run migration:run`
+
+### Importante
+
+- **Nunca** uses `synchronize: true` en producción
+- **Siempre revisa** las migraciones generadas antes de ejecutarlas
+- **Commitea** los archivos de migración al repositorio
+- Las migraciones se ejecutan en orden cronológico (timestamp en el nombre)
+
+
+
 ## 🐳 Docker
 
 ### Desarrollo
@@ -199,28 +243,28 @@ Ver `.env.example` para todas las variables disponibles:
 - `NODE_ENV`: Ambiente (development/production)
 - `PORT`: Puerto de la aplicación
 - `DB_*`: Configuración de base de datos
+- `DB_LOGGING`: Habilitar logs de SQL (true/false)
 - `JWT_SECRET`: Secreto para JWT
 - `JWT_EXPIRES_IN`: Tiempo de expiración del token
+- `THROTTLE_TTL`: Ventana de tiempo para rate limiting (segundos)
+- `THROTTLE_LIMIT`: Máximo de requests por ventana
 
 ### TypeORM
 
-La sincronización automática está habilitada en desarrollo. En producción, usa migraciones:
+**Importante**: Este proyecto usa **migraciones** para gestionar el schema de la base de datos.
 
-```bash
-npm run migration:generate -- -n MigrationName
-npm run migration:run
-```
+`synchronize: false` está configurado para evitar cambios automáticos en producción. Ver sección "Migraciones de Base de Datos" para más detalles.
 
 ## 📖 Próximas Mejoras Sugeridas
 
 - [ ] Implementar CQRS con `@nestjs/cqrs`
 - [ ] Agregar Redis para caché
-- [ ] Implementar Rate Limiting
 - [ ] Domain Events con Event Bus
-- [ ] Agregar tests unitarios y e2e
-- [ ] CI/CD pipeline
-- [ ] Health checks y métricas
+- [ ] Agregar tests unitarios y e2e (0% cobertura actual)
+- [ ] CI/CD pipeline (GitHub Actions)
+- [ ] Métricas con Prometheus
 - [ ] Soft deletes en entidades
+- [ ] Validación de variables de entorno con class-validator
 
 ## 🤝 Contribuciones
 
