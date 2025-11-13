@@ -1,8 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { HealthCheck, HealthCheckService, TypeOrmHealthIndicator, MemoryHealthIndicator, DiskHealthIndicator } from '@nestjs/terminus';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @ApiTags('Health')
+@SkipThrottle() // Excluir health checks del rate limiting
 @Controller('health')
 export class HealthController {
   constructor(

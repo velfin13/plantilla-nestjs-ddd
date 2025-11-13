@@ -19,8 +19,14 @@ export interface AppConfig {
   apiPrefix: string;
 }
 
+export interface ThrottlerConfig {
+  ttl: number;
+  limit: number;
+}
+
 export interface Config {
   app: AppConfig;
   database: DatabaseConfig;
   jwt: JwtConfig;
+  throttler: ThrottlerConfig;
 }
