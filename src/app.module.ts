@@ -13,6 +13,7 @@ import { DatabaseConfig } from './config/config.interface';
 import { LoggerModule } from './common/infrastructure/logger/logger.module';
 import { HealthModule } from './common/infrastructure/modules/health.module';
 import { LoggingInterceptor } from './common/infrastructure/interceptors/logging.interceptor';
+import { validate } from './config/env.validation';
 
 @Module({
   imports: [
@@ -20,6 +21,11 @@ import { LoggingInterceptor } from './common/infrastructure/interceptors/logging
       isGlobal: true,
       load: [appConfig, databaseConfig, jwtConfig, throttlerConfig],
       envFilePath: ['.env.local', '.env'],
+      validate,
+      validationOptions: {
+        allowUnknown: true,
+        abortEarly: false,
+      },
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

@@ -238,16 +238,30 @@ docker run -p 3000:3000 --env-file .env nestjs-ddd:prod
 
 ### Variables de Entorno
 
-Ver `.env.example` para todas las variables disponibles:
+⚠️ **Este proyecto valida las variables de entorno en tiempo de arranque** usando class-validator.
 
-- `NODE_ENV`: Ambiente (development/production)
-- `PORT`: Puerto de la aplicación
-- `DB_*`: Configuración de base de datos
-- `DB_LOGGING`: Habilitar logs de SQL (true/false)
-- `JWT_SECRET`: Secreto para JWT
-- `JWT_EXPIRES_IN`: Tiempo de expiración del token
-- `THROTTLE_TTL`: Ventana de tiempo para rate limiting (segundos)
-- `THROTTLE_LIMIT`: Máximo de requests por ventana
+Ver `.env.example` para todas las variables disponibles. Las variables **REQUERIDAS** son:
+
+**Base de Datos:**
+- `DB_HOST` - Hostname de PostgreSQL (REQUERIDO)
+- `DB_PORT` - Puerto de base de datos (REQUERIDO)
+- `DB_USERNAME` - Usuario (REQUERIDO)
+- `DB_PASSWORD` - Contraseña (REQUERIDO)
+- `DB_NAME` - Nombre de la base de datos (REQUERIDO)
+
+**JWT:**
+- `JWT_SECRET` - Secret key para tokens (REQUERIDO)
+
+**Opcionales (con defaults):**
+- `NODE_ENV`: development/production/test (default: development)
+- `PORT`: Puerto de la aplicación (default: 3000)
+- `DB_LOGGING`: Habilitar logs de SQL (default: false)
+- `JWT_EXPIRES_IN`: Expiración del token (default: 1d)
+- `THROTTLE_TTL`: Ventana de tiempo para rate limiting en segundos (default: 60)
+- `THROTTLE_LIMIT`: Máximo de requests por ventana (default: 10)
+- `CORS_ORIGIN`: Orígenes permitidos (default: *)
+
+📖 Ver documentación completa en [`docs/ENV_VALIDATION.md`](docs/ENV_VALIDATION.md)
 
 ### TypeORM
 
