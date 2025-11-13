@@ -2,41 +2,43 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TaskEntity } from './task.entity';
-import { BaseRepositoryTypeORM } from '../../../common/repositories/base.repository.typeorm';
 import { TaskRepository } from 'src/task/domain/repositories/task.repository';
 import { Task } from 'src/task/domain/entities/task.entity';
 
 @Injectable()
-export class PostgresTaskRepository extends BaseRepositoryTypeORM<TaskEntity> implements TaskRepository {
+export class PostgresTaskRepository implements TaskRepository {
   
-  constructor(@InjectRepository(TaskEntity) repo: Repository<TaskEntity>) {
-    super(repo);
-  }
+  constructor(@InjectRepository(TaskEntity) private readonly repo: Repository<TaskEntity>) {}
 
   async findAll(): Promise<Task[]> {
-    const entities = await super.findAll();
-    return entities.map(e => new Task(e.id, e.title, e.completed));
+    const entities = await this.repo.find();
+    return entities.map(e => new Task(e.id, e.title, e.completed, e.createdAt, e.updatedAt));
   }
 
   async findAllPaginated(page: number, limit: number): Promise<{ data: Task[]; total: number }> {
-    const { data, total } = await super.findAllPaginated(page, limit);
+    const skip = (page - 1) * limit;
+    const [data, total] = await this.repo.findAndCount({ skip, take: limit });
     return {
-      data: data.map(e => new Task(e.id, e.title, e.completed)),
+      data: data.map(e => new Task(e.id, e.title, e.completed, e.createdAt, e.updatedAt)),
       total,
     };
   }
 
   async findById(id: string): Promise<Task | null> {
-    const entity = await super.findById(id);
+    const entity = await this.repo.findOneBy({ id } as any);
     if (!entity) return null;
-    return new Task(entity.id, entity.title, entity.completed);
+    return new Task(entity.id, entity.title, entity.completed, entity.createdAt, entity.updatedAt);
   }
 
   async save(entity: Task): Promise<void> {
-    await super.save({ id: entity.id, title: entity.title, completed: entity.completed });
+    await this.repo.save({
+      id: entity.id,
+      title: entity.title,
+      completed: entity.completed,
+    } as any);
   }
 
   async delete(id: string): Promise<void> {
-    await super.delete(id);
+    await this.repo.delete(id);
   }
 }

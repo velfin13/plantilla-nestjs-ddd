@@ -4,12 +4,16 @@ export class Task {
     readonly id: string;
     title: string;
     completed: boolean;
+    readonly createdAt?: Date;
+    readonly updatedAt?: Date;
 
-    constructor(id: string, title: string, completed: boolean = false) {
+    constructor(id: string, title: string, completed: boolean = false, createdAt?: Date, updatedAt?: Date) {
         this.validateBusinessRules(title);
         this.id = id;
         this.title = title.trim();
         this.completed = completed;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     private validateBusinessRules(title: string): void {

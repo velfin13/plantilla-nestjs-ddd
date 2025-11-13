@@ -10,6 +10,8 @@ export class User {
   email: string;
   password: string;
   active: boolean;
+  readonly createdAt?: Date;
+  readonly updatedAt?: Date;
 
   private constructor(builder: any) {
     this.validateBusinessRules(builder);
@@ -20,6 +22,8 @@ export class User {
     this.email = builder.email;
     this.password = builder.password;
     this.active = builder.active ?? true;
+    this.createdAt = builder.createdAt;
+    this.updatedAt = builder.updatedAt;
   }
 
   private validateBusinessRules(builder: any): void {
@@ -55,6 +59,8 @@ export class User {
     email: string;
     password: string;
     active?: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
 
     setId(id: string) { this.id = id; return this; }
     setName(name: string) { this.name = name; return this; }
@@ -63,6 +69,8 @@ export class User {
     setEmail(email: string) { this.email = email; return this; }
     setPassword(password: string) { this.password = password; return this; }
     setActive(active: boolean) { this.active = active; return this; }
+    setCreatedAt(createdAt: Date) { this.createdAt = createdAt; return this; }
+    setUpdatedAt(updatedAt: Date) { this.updatedAt = updatedAt; return this; }
 
     build(): User {
       if (!this.id || !this.name || !this.lastname || !this.phone || !this.email) {

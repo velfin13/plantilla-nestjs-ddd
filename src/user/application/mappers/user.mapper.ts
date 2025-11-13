@@ -11,6 +11,8 @@ export class UserMapper {
       .setEmail(entity.email)
       .setPassword(entity.password)
       .setActive(entity.active)
+      .setCreatedAt(entity.createdAt)
+      .setUpdatedAt(entity.updatedAt)
       .build();
   }
 
@@ -23,6 +25,8 @@ export class UserMapper {
     entity.email = domain.email;
     entity.password = domain.password;
     entity.active = domain.active;
+    if (domain.createdAt) entity.createdAt = domain.createdAt;
+    if (domain.updatedAt) entity.updatedAt = domain.updatedAt;
     return entity;
   }
 
