@@ -5,6 +5,9 @@ import { TaskController } from '../controllers/task.controller';
 import { PostgresTaskRepository } from '../persistence/postgres-task.repository';
 import { TaskEntity } from '../persistence/task.entity';
 import { ToggleTaskUseCase } from 'src/task/application/use-cases/toggle-task.usecase';
+import { GetTaskByIdUseCase } from 'src/task/application/use-cases/get-task-by-id.usecase';
+import { UpdateTaskUseCase } from 'src/task/application/use-cases/update-task.usecase';
+import { DeleteTaskUseCase } from 'src/task/application/use-cases/delete-task.usecase';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TaskEntity])],
@@ -27,6 +30,21 @@ import { ToggleTaskUseCase } from 'src/task/application/use-cases/toggle-task.us
     {
       provide: ToggleTaskUseCase,
       useFactory: (repo: PostgresTaskRepository) => new ToggleTaskUseCase(repo),
+      inject: ['TaskRepository'],
+    },
+    {
+      provide: GetTaskByIdUseCase,
+      useFactory: (repo: PostgresTaskRepository) => new GetTaskByIdUseCase(repo),
+      inject: ['TaskRepository'],
+    },
+    {
+      provide: UpdateTaskUseCase,
+      useFactory: (repo: PostgresTaskRepository) => new UpdateTaskUseCase(repo),
+      inject: ['TaskRepository'],
+    },
+    {
+      provide: DeleteTaskUseCase,
+      useFactory: (repo: PostgresTaskRepository) => new DeleteTaskUseCase(repo),
       inject: ['TaskRepository'],
     },
   ],
