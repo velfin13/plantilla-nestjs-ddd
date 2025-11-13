@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Patch, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ToggleTaskUseCase } from 'src/task/application/use-cases/toggle-task.usecase';
 import { CreateTaskUseCase } from '../../application/use-cases/create-task.usecase';
 import { GetTasksUseCase } from '../../application/use-cases/get-tasks.usecase';
@@ -8,8 +8,11 @@ import { CreateTaskDto } from '../dto/create-task.dto';
 import { ToggleTaskDto } from '../dto/toggle-task.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
+import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
 
 @ApiTags('Tasks')
+@ApiBearerAuth('JWT-auth')
+@UseGuards(JwtAuthGuard)
 @Controller('tasks')
 export class TaskController {
   constructor(

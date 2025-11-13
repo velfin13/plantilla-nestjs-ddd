@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Query, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Query, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateUserUseCase } from 'src/user/application/use-cases/create-user.usecase';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { GetUsersUseCase } from 'src/user/application/use-cases/get-users.usecase';
@@ -8,9 +8,12 @@ import { UserResponse } from '../dto/user-response.dto';
 import { TransformInterceptor } from 'src/common/infrastructure/interceptors/transform.interceptor';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PaginatedResponseDto } from 'src/common/dto/paginated-response.dto';
+import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard';
 
 
 @ApiTags('Users')
+@ApiBearerAuth('JWT-auth')
+@UseGuards(JwtAuthGuard)
 @Controller('Users')
 @UseInterceptors(TransformInterceptor)
 export class UserController {

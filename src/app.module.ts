@@ -9,6 +9,7 @@ import { AuthModule } from './auth/infrastructure/modules/auth.module';
 import { appConfig, databaseConfig, jwtConfig } from './config';
 import { DatabaseConfig } from './config/config.interface';
 import { LoggerModule } from './common/infrastructure/logger/logger.module';
+import { HealthModule } from './common/infrastructure/modules/health.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { LoggerModule } from './common/infrastructure/logger/logger.module';
       },
     }),
     LoggerModule,
+    HealthModule,
     TaskModule,
     AuthModule,
     UserModule

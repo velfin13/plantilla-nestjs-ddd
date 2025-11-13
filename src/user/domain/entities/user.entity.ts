@@ -65,8 +65,12 @@ export class User {
     setActive(active: boolean) { this.active = active; return this; }
 
     build(): User {
-      if (!this.id || !this.name || !this.lastname || !this.phone || !this.email || !this.password) {
+      if (!this.id || !this.name || !this.lastname || !this.phone || !this.email) {
         throw new Error('Faltan campos obligatorios');
+      }
+      // Password puede ser undefined cuando se carga desde BD sin incluirlo por seguridad
+      if (!this.password) {
+        this.password = ''; // Valor por defecto para casos donde no se necesita
       }
       return new User(this);
     }
